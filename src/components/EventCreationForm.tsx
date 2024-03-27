@@ -11,6 +11,8 @@ import {
   Select,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 interface FormData {
   title: string;
@@ -29,11 +31,11 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     gap: "32px",
-    marginLeft:'10px'
+    marginLeft: "10px",
   },
 });
 
-const EventCreationForm: React.FC = () => {
+const EventCreationForm: React.FC = ({ onSubmitSuccess }) => {
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
@@ -46,6 +48,7 @@ const EventCreationForm: React.FC = () => {
     categories: [],
   });
   const classes = useStyles();
+  const userData = useSelector((state) => state?.user?.userData);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -59,9 +62,16 @@ const EventCreationForm: React.FC = () => {
     setFormData({ ...formData, [name!]: val });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData); // Send formData to backend for processing
+    formData.organizer = userData?._id;
+    await axios
+      .post("http://localhost:3004/events", formData)
+      .then((res) => {
+        console.log("reessss", res);
+        onSubmitSuccess();
+      })
+      .catch((err) => console.log("eerrr", err));
   };
 
   return (
@@ -145,7 +155,7 @@ const EventCreationForm: React.FC = () => {
         </FormGroup>
       </FormControl>
       <Button type="submit" variant="contained">
-        Create Event
+        Submit
       </Button>
     </form>
   );
