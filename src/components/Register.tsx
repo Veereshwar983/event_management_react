@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import '../Register.css';
+import "../Register.css";
+import { Button, Link, TextField, Typography } from "@mui/material";
+import { APIDirectory } from "../rest";
 
 interface RegisterFormData {
   email: string;
@@ -28,8 +30,9 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      const url = APIDirectory.registerUser();
       await axios
-        .post("http://localhost:3004/register", formData)
+        .post(url, formData)
         .then((res) => {
           navigate("/login");
         });
@@ -39,17 +42,17 @@ const Register: React.FC = () => {
     }
   };
 
-  const  handleLoginClick = () => {
-    navigate('/login')
-  }
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
 
   return (
     <div className="form-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Email:</label>
-          <input
+          <TextField
+            label="Email"
             type="email"
             name="email"
             value={formData.email}
@@ -59,13 +62,13 @@ const Register: React.FC = () => {
         </div>
 
         <div className="form-group">
-          <label>Password:</label>
-          <input
+          <TextField
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
             required
+            label="Password"
           />
         </div>
         <div className="form-group">
@@ -76,8 +79,23 @@ const Register: React.FC = () => {
           </select>
         </div>
 
-        <button type="submit" className="btn btn-primary">Register</button>
-        <button onClick={handleLoginClick} className="btn btn-primary">Login</button>
+        <Button type="submit" variant="contained" className="btn btn-primary">
+          Register
+        </Button>
+
+        <Typography variant="body1" style={{ marginTop: "20px" }}>
+          Have already an account?{" "}
+          <Link
+            onClick={handleLoginClick}
+            style={{
+              color: "green",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
+            Login here
+          </Link>
+        </Typography>
       </form>
     </div>
   );

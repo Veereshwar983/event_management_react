@@ -1,14 +1,18 @@
-import { Button, Drawer, Grid, Typography } from "@mui/material";
+import { Button, Drawer, Grid, Tabs, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import EventCreationForm from "./EventCreationForm";
 import EventCard from "./EventCard";
 import axios from "axios";
 import { useSelector } from "react-redux";
-
+import Tab from "@mui/material/Tab";
+import { APIDirectory } from "../rest";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const [events, setEvents] = useState([]);
+  const [value, setValue] = useState(0);
+  const [registeredEvents, setRegisteredEvents] = useState([]);
+  const [unRegisteredEvents, setUnRegisteredEvents] = useState([]);
 
   const userData = useSelector((state) => state?.user?.userData);
   const handleOpenDrawer = () => {
@@ -20,38 +24,59 @@ const Home = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(`http://localhost:3004/events`);
+      const url = APIDirectory.getEvents();
+      const response = await axios.get(url);
+      console.log("response--", response.data);
       setEvents(response.data);
+      if (userData?.role !== "organizer") {
+        const registeredData = response?.data?.filter((item) =>
+          item.attendees.includes(userData?._id)
+        );
+        const unregisterData = response?.data?.filter(
+          (item) => !item.attendees.includes(userData?._id)
+        );
+        setRegisteredEvents(registeredData);
+        setUnRegisteredEvents(unregisterData);
+      }
     } catch (error) {
-      console.error('Error fetching events:', error);
+      console.error("Error fetching events:", error);
     }
   };
 
   useEffect(() => {
-    fetchEvents();
+    +fetchEvents();
   }, [userData._id]);
 
   const handleOnSubmitSuccess = () => {
     handleCloseDrawer();
     fetchEvents();
-  }
+  };
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  console.log("valuevalue", value);
 
   return (
     <>
       <Grid container spacing={3} direction="column">
-        <Grid
-          item
-          xs
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-          }}
-        >
-          { userData?.role === "organizer" &&
-          <Button variant="contained" onClick={handleOpenDrawer}>
-            Add Event
-          </Button>}
+        <Grid item container justifyContent="space-between" alignItems="center">
+          {userData?.role !== "organizer" && (
+            <Grid item>
+              <Tabs value={value} onChange={handleChange}>
+                <Tab label="Upcoming Events" />
+                <Tab label="Registered Events" />
+              </Tabs>
+            </Grid>
+          )}
+          {userData?.role === "organizer" && (
+            <Grid item>
+              <Button variant="contained" onClick={handleOpenDrawer}>
+                Add Event
+              </Button>
+            </Grid>
+          )}
         </Grid>
         <Drawer anchor="right" open={open} onClose={handleCloseDrawer}>
           {/* Drawer content */}
@@ -70,12 +95,33 @@ const Home = () => {
               <Button onClick={handleCloseDrawer}>Close</Button>
             </div>
 
-            <EventCreationForm onSubmitSuccess = {handleOnSubmitSuccess} />
+            <EventCreationForm onSubmitSuccess={handleOnSubmitSuccess} />
           </div>
         </Drawer>
-        <Grid item>
-          <EventCard events={events} onSubmitSuccess = {handleOnSubmitSuccess}/>
-        </Grid>
+        {userData?.role === "organizer" && (
+          <Grid item>
+            <EventCard
+              events={events}
+              onSubmitSuccess={handleOnSubmitSuccess}
+            />
+          </Grid>
+        )}
+        {userData?.role !== "organizer" && value === 0 && (
+          <Grid item>
+            <EventCard
+              events={unRegisteredEvents}
+              onSubmitSuccess={handleOnSubmitSuccess}
+            />
+          </Grid>
+        )}
+        {value === 1 && (
+          <Grid item>
+            <EventCard
+              events={registeredEvents}
+              onSubmitSuccess={handleOnSubmitSuccess}
+            />
+          </Grid>
+        )}
       </Grid>
     </>
   );

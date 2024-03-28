@@ -4,8 +4,6 @@ import {
   Button,
   Checkbox,
   FormControl,
-  FormControlLabel,
-  FormGroup,
   FormLabel,
   MenuItem,
   Select,
@@ -13,6 +11,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { APIDirectory } from "../rest";
 
 interface FormData {
   title: string;
@@ -65,8 +64,9 @@ const EventCreationForm: React.FC = ({ onSubmitSuccess }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     formData.organizer = userData?._id;
+    const url = APIDirectory.saveEvents();
     await axios
-      .post("http://localhost:3004/events", formData)
+      .post(url, formData)
       .then((res) => {
         console.log("reessss", res);
         onSubmitSuccess();
@@ -134,26 +134,7 @@ const EventCreationForm: React.FC = ({ onSubmitSuccess }) => {
           </Select>
         )}
       </FormControl>
-      <FormControl>
-        <FormLabel>Event Categories:</FormLabel>
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Category 1"
-            name="categories"
-            value="category1"
-            onChange={handleChange}
-          />
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Category 2"
-            name="categories"
-            value="category2"
-            onChange={handleChange}
-          />
-          {/* Add more categories as needed */}
-        </FormGroup>
-      </FormControl>
+
       <Button type="submit" variant="contained">
         Submit
       </Button>

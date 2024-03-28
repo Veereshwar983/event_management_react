@@ -12,6 +12,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { APIDirectory } from "../rest";
 
 interface Event {
   id: number;
@@ -23,7 +24,7 @@ interface Event {
 
 interface Props {
   events: Event[];
-  onSubmitSuccess: ()=> void;
+  onSubmitSuccess: () => void;
 }
 
 const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
@@ -51,9 +52,10 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     formData.userId = userData?._id;
-    formData.eventId = selectedEvent?._id
+    formData.eventId = selectedEvent?._id;
+    const url = APIDirectory.saveEventRegistration();
     await axios
-      .post("http://localhost:3004/eventRegistration", formData)
+      .post(url, formData)
       .then((res) => {
         handleCloseDrawer();
         onSubmitSuccess();
@@ -71,7 +73,7 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
     }));
   };
 
-  console.log('selectedEventselectedEvent', selectedEvent)
+  console.log("selectedEventselectedEvent", selectedEvent);
 
   return (
     <Grid container spacing={3}>
