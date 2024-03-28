@@ -105,7 +105,7 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
                 </div>
 
                 <Typography color="textSecondary" gutterBottom>
-                  Date: {event.date}
+                  Date: {new Date(event.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                 </Typography>
                 <Typography color="textSecondary" gutterBottom>
                   Time: {event.time}
@@ -140,7 +140,7 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
               </div>
 
               <Typography color="textSecondary" gutterBottom>
-                Date: {selectedEvent?.date}
+                Date:  {new Date(selectedEvent?.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
               </Typography>
               <Typography color="textSecondary" gutterBottom>
                 Time: {selectedEvent?.time}
