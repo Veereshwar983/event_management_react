@@ -32,6 +32,7 @@ import Login from "./components/Login";
 import Home from "./components/Home";
 import EventCreationForm from "./components/EventCreationForm";
 import { useState } from "react";
+import Logout from "./Logout";
 
 const App = () => {
   // const navigate = useNavigate();
@@ -52,18 +53,8 @@ const App = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Event Management
             </Typography>
-            {loggedIn ? (
-              <Button color="inherit" onClick={handleLogout}>
-                Logout
-              </Button>
-            ) : (
-              <Button component={Link} to="/login" color="inherit">
-                Login
-              </Button>
-            )}
-            {/* <Button component={Link} to="/login" color="inherit">
-              Login
-            </Button> */}
+
+            <Logout loggedIn={loggedIn} handleLogout={handleLogout} />
           </Toolbar>
         </AppBar>
         <Container style={{ paddingTop: "64px" }}>
