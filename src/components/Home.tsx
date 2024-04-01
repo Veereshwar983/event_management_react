@@ -6,6 +6,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import Tab from "@mui/material/Tab";
 import { APIDirectory } from "../rest";
+import useDebounce from "./util/useDebounce";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -13,6 +14,8 @@ const Home = () => {
   const [value, setValue] = useState(0);
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [unRegisteredEvents, setUnRegisteredEvents] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedQuery = useDebounce(searchQuery, 300);
 
   const userData = useSelector((state) => state?.user?.userData);
   const handleOpenDrawer = () => {
@@ -50,7 +53,26 @@ const Home = () => {
   };
 
   useEffect(() => {
-    +fetchEvents();
+    const fetchSearchedEvents = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3005/events/search?query=${debouncedQuery}`
+        );
+        setEvents(response.data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    if (debouncedQuery) {
+      fetchSearchedEvents();
+    } else {
+      fetchEvents(); // Clear events if query is empty
+    }
+  }, [debouncedQuery]);
+
+  useEffect(() => {
+    fetchEvents();
   }, [userData._id]);
 
   const handleOnSubmitSuccess = () => {
@@ -62,19 +84,29 @@ const Home = () => {
     setValue(newValue);
   };
 
-  console.log("valuevalue", value);
-
   return (
     <>
-      <Grid container spacing={3} direction="column">
+      <Grid container spacing={3} direction="column" overflow="hidden">
         <Grid item container justifyContent="space-between" alignItems="center">
           {userData?.role !== "organizer" && (
-            <Grid item>
+            <Grid
+              item
+              position="fixed"
+              style={{ marginTop: "30px", backgroundColor: "white" }}
+            >
               <Tabs value={value} onChange={handleChange}>
                 <Tab label="Upcoming Events" />
                 <Tab label="Registered Events" />
               </Tabs>
             </Grid>
+          )}
+          {userData?.role === "organizer" && (
+            <input
+              type="text"
+              placeholder="Search by event title"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           )}
           {userData?.role === "organizer" && (
             <Grid item>
@@ -105,7 +137,7 @@ const Home = () => {
           </div>
         </Drawer>
         {userData?.role === "organizer" && (
-          <Grid item>
+          <Grid item style={{ marginTop: "20px" }}>
             <EventCard
               events={events}
               onSubmitSuccess={handleOnSubmitSuccess}
@@ -113,7 +145,7 @@ const Home = () => {
           </Grid>
         )}
         {userData?.role !== "organizer" && value === 0 && (
-          <Grid item>
+          <Grid item style={{ marginTop: "20px" }}>
             <EventCard
               events={unRegisteredEvents}
               onSubmitSuccess={handleOnSubmitSuccess}
@@ -121,7 +153,7 @@ const Home = () => {
           </Grid>
         )}
         {value === 1 && (
-          <Grid item>
+          <Grid item style={{ marginTop: "20px" }}>
             <EventCard
               events={registeredEvents}
               onSubmitSuccess={handleOnSubmitSuccess}

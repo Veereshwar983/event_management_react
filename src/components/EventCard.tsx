@@ -77,9 +77,13 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={6}>
+      <Grid
+        item
+        xs={6}
+        sx={{ overflowY: "auto", maxHeight: "calc(100vh - 64px)" }}
+      >
         {" "}
-        {events.length > 0 ?
+        {events.length > 0 ? (
           events?.map((event) => (
             <Card
               style={{
@@ -105,7 +109,12 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
                 </div>
 
                 <Typography color="textSecondary" gutterBottom>
-                  Date: {new Date(event.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                  Date:{" "}
+                  {new Date(event.date).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
                 </Typography>
                 <Typography color="textSecondary" gutterBottom>
                   Time: {event.time}
@@ -115,9 +124,10 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
                 </Typography>
               </CardContent>
             </Card>
-          )) : 
+          ))
+        ) : (
           <Typography>No Data Found</Typography>
-          }
+        )}
       </Grid>
       {selectedEvent && (
         <Grid item xs={6}>
@@ -142,7 +152,12 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
               </div>
 
               <Typography color="textSecondary" gutterBottom>
-                Date:  {new Date(selectedEvent?.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                Date:{" "}
+                {new Date(selectedEvent?.date).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}
               </Typography>
               <Typography color="textSecondary" gutterBottom>
                 Time: {selectedEvent?.time}
