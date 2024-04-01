@@ -20,6 +20,10 @@ export const getEvents = () => {
   return `${baseUrl}/events`;
 };
 
+export const getOrganizerEvents = (organizerId) => {
+  return `${baseUrl}/events?organizerId=${organizerId}`;
+};
+
 export const saveEventRegistration = () => {
     return `${baseUrl}/eventRegistration`;
   };

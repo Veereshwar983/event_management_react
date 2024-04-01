@@ -97,6 +97,7 @@ const EventCreationForm: React.FC = ({ onSubmitSuccess }) => {
         value={formData.date}
         onChange={handleChange}
         required
+        inputProps={{ min: new Date().toISOString().split('T')[0] }}
       />
       <TextField
         label="Time"

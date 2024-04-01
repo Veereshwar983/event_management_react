@@ -79,7 +79,7 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
     <Grid container spacing={3}>
       <Grid item xs={6}>
         {" "}
-        {events.length > 0 &&
+        {events.length > 0 ?
           events?.map((event) => (
             <Card
               style={{
@@ -115,7 +115,9 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
                 </Typography>
               </CardContent>
             </Card>
-          ))}
+          )) : 
+          <Typography>No Data Found</Typography>
+          }
       </Grid>
       {selectedEvent && (
         <Grid item xs={6}>
@@ -134,9 +136,9 @@ const EventCard: React.FC<Props> = ({ events, onSubmitSuccess }) => {
                 <Typography variant="h5" component="div">
                   {selectedEvent?.title}
                 </Typography>
-                <IconButton aria-label="edit">
+                {/* <IconButton aria-label="edit">
                   <EditIcon />
-                </IconButton>
+                </IconButton> */}
               </div>
 
               <Typography color="textSecondary" gutterBottom>

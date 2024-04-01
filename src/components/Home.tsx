@@ -24,17 +24,23 @@ const Home = () => {
 
   const fetchEvents = async () => {
     try {
-      const url = APIDirectory.getEvents();
+      const url =
+        userData?.role !== "organizer"
+          ? APIDirectory.getEvents()
+          : APIDirectory.getOrganizerEvents(userData._id);
       const response = await axios.get(url);
       console.log("response--", response.data);
+      const today = new Date();
       setEvents(response.data);
       if (userData?.role !== "organizer") {
         const registeredData = response?.data?.filter((item) =>
           item.attendees.includes(userData?._id)
         );
-        const unregisterData = response?.data?.filter(
-          (item) => !item.attendees.includes(userData?._id)
-        );
+
+        const unregisterData = response?.data?.filter((item) => {
+          const eventDate = new Date(item.date);
+          return eventDate >= today && !item.attendees.includes(userData?._id);
+        });
         setRegisteredEvents(registeredData);
         setUnRegisteredEvents(unregisterData);
       }
