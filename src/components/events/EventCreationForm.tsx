@@ -11,7 +11,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { APIDirectory } from "../rest";
+import { APIDirectory } from "../../rest";
 
 interface FormData {
   title: string;
@@ -97,7 +97,7 @@ const EventCreationForm: React.FC = ({ onSubmitSuccess }) => {
         value={formData.date}
         onChange={handleChange}
         required
-        inputProps={{ min: new Date().toISOString().split('T')[0] }}
+        inputProps={{ min: new Date().toISOString().split("T")[0] }}
       />
       <TextField
         label="Time"

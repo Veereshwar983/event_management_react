@@ -1,7 +1,7 @@
 import { Button, Drawer, Grid, Tabs, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import EventCreationForm from "./EventCreationForm";
-import EventCard from "./EventCard";
+import EventCreationForm from "./events/EventCreationForm";
+import EventCard from "./events/EventCard";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Tab from "@mui/material/Tab";

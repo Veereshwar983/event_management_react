@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { APIDirectory } from "../rest";
+import { APIDirectory } from "../../rest";
 
 interface Event {
   id: number;

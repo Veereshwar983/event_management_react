@@ -19,21 +19,16 @@
 
 // export default App;
 
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Container } from "@mui/material";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Home from "./components/Home";
-import EventCreationForm from "./components/EventCreationForm";
+import EventCreationForm from "./components/events/EventCreationForm";
 import { useState } from "react";
 import Logout from "./Logout";
 
 const App = () => {
-
   const [loggedIn, setLoggedIn] = useState(false);
   const handleLogout = () => {
     setLoggedIn(false);
